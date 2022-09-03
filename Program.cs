@@ -15,6 +15,12 @@ builder.Services.AddDbContext<TaskTreeDBContext>(options => {
     options.UseSqlite(configuration.GetConnectionString("CustomersSqliteConnectionString"));
 });
 
+
+// TODO: Add Logging .. ? serilog ?? 
+// TODO: Add Logging .. ? App Insights
+
+builder.Services.AddTransient<TaskTreeDBSeeder>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,5 +40,8 @@ app.MapControllerRoute(
     pattern: "{controller}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html"); ;
+
+var dbSeeder = app.Services.GetService<TaskTreeDBSeeder>();
+dbSeeder.SeedAsync(app.Services).Wait();
 
 app.Run();
