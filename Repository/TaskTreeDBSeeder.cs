@@ -52,7 +52,7 @@ namespace TaskTreeMD.Repository
             }
 
             // TreeTask
-            var treeTasks = GetTreeTasks();
+            var treeTasks = GetTreeTasks(persons);
             db.TreeTask.AddRange(treeTasks);
             try
             {
@@ -100,18 +100,18 @@ namespace TaskTreeMD.Repository
             persons.Add(new Person { FirstName = "Samual", LastName = "Snead" });
             persons.Add(new Person { FirstName = "Linda", LastName = "Jones" });
             persons.Add(new Person { FirstName = "Nancy", LastName = "Smith" });
+            persons.Add(new Person { FirstName = "Mike", LastName = "Magical" });
             return persons;
         }
 
-        private List<TreeTask> GetTreeTasks()
+        private List<TreeTask> GetTreeTasks(List<Person> persons)
         {
             var treeTasks = new List<TreeTask>();
-            treeTasks.Add(new TreeTask { Title = "There To Here", SubTitle = "Record Project" });
-            treeTasks.Add(new TreeTask { Title = "Tree Task MD", SubTitle = "Sample Code Project" });
-
+            treeTasks.Add(new TreeTask { Title = "There To Here", SubTitle = "Record Project", AssignedTo = persons[0] });
+            treeTasks.Add(new TreeTask { Title = "Tree Task MD", SubTitle = "Sample Code Project", AssignedTo = persons[1] });
             treeTasks.Add(new TreeTask { Title = "Have To Say", SubTitle = "Song", ParentId = 1 });
-            treeTasks.Add(new TreeTask { Title = "Classical Guitar", SubTitle="Tracking", ParentId = 3});
-            treeTasks.Add(new TreeTask { Title = "Electric Guitar", SubTitle = "Tracking", ParentId = 3 });
+            treeTasks.Add(new TreeTask { Title = "Classical Guitar", SubTitle="Tracking", ParentId = 3, AssignedTo = persons[5] });
+            treeTasks.Add(new TreeTask { Title = "Electric Guitar", SubTitle = "Tracking", ParentId = 3, AssignedTo = persons[5] });
             return treeTasks;
         }
 

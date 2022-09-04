@@ -19,6 +19,7 @@ namespace TaskTreeMD.Repository
             try
             {
                 return await _Context.TreeTask.OrderBy(t => t.Id)
+                                              .Include(t => t.AssignedTo)
                                               .ToListAsync();
             }
             catch (Exception ex)
@@ -32,6 +33,7 @@ namespace TaskTreeMD.Repository
             try
             {
                 return await _Context.TreeTask
+                                     .Include(t => t.AssignedTo)
                                      .SingleOrDefaultAsync(c => c.Id == id);
             }
             catch (Exception ex)
