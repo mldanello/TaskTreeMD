@@ -42,7 +42,7 @@ namespace TaskTreeMD.Repository
                 var readPersons = await db.Person.Select(x => x).ToListAsync();  
                 foreach(var p in readPersons)
                 {
-                    Console.WriteLine($"Id: {p.Id} Fn: {p.FirstName} Ln: {p.LastName}");
+                    _logger.LogInformation($"Person - Id: {p.Id} Fn: {p.FirstName} Ln: {p.LastName}");
                 }
             }
             catch (Exception ex)
@@ -51,33 +51,45 @@ namespace TaskTreeMD.Repository
                 throw;
             }
 
-            //// TreeTask
-            //var treeTask = GetTreeTasks();
-            //db.TreeTask.AddRange(treeTask);
-            //try
-            //{
-            //    int numAffected = await db.SaveChangesAsync();
-            //    _logger.LogInformation(@"Saved {numAffected} treeTasks");
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.LogError($"Error in ({nameof(TaskTreeDBSeeder)}: " + ex.Message);
-            //    throw;
-            //}
+            // TreeTask
+            var treeTasks = GetTreeTasks();
+            db.TreeTask.AddRange(treeTasks);
+            try
+            {
+                int numAffected = await db.SaveChangesAsync();
+                _logger.LogInformation($"Saved {numAffected} treeTasks");
+                var readTreeTasks = await db.TreeTask.Select(x => x).ToListAsync();
+                foreach (var p in readTreeTasks)
+                {
+                    _logger.LogInformation($"Task - Id: {p.Id} Title: {p.Title}");
+                }
 
-            //// Activity
-            //var activity = GetActivity();
-            //db.TreeTask.AddRange(activity);
-            //try
-            //{
-            //    int numAffected = await db.SaveChangesAsync();
-            //    _logger.LogInformation(@"Saved {numAffected} activity");
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.LogError($"Error in ({nameof(TaskTreeDBSeeder)}: " + ex.Message);
-            //    throw;
-            //}
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in ({nameof(TaskTreeDBSeeder)}: " + ex.Message);
+                throw;
+            }
+
+            // Activity
+            var activity = GetActivity();
+            db.Activity.AddRange(activity);
+            try
+            {
+                int numAffected = await db.SaveChangesAsync();
+                _logger.LogInformation(@"Saved {numAffected} activity");
+                var readActivities = await db.Activity.Select(x => x).ToListAsync();
+                foreach (var p in readActivities)
+                {
+                    _logger.LogInformation($"Activity - Id: {p.Id} Desc: {p.Description}");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in ({nameof(TaskTreeDBSeeder)}: " + ex.Message);
+                throw;
+            }
         }
 
         private List<Person> GetPersons()
@@ -91,7 +103,27 @@ namespace TaskTreeMD.Repository
             return persons;
         }
 
+        private List<TreeTask> GetTreeTasks()
+        {
+            var treeTasks = new List<TreeTask>();
+            treeTasks.Add(new TreeTask { Title = "There To Here", SubTitle = "Record Project" });
+            treeTasks.Add(new TreeTask { Title = "Tree Task MD", SubTitle = "Sample Code Project" });
 
+            treeTasks.Add(new TreeTask { Title = "Have To Say", SubTitle = "Song", ParentId = 1 });
+            treeTasks.Add(new TreeTask { Title = "Classical Guitar", SubTitle="Tracking", ParentId = 3});
+            treeTasks.Add(new TreeTask { Title = "Electric Guitar", SubTitle = "Tracking", ParentId = 3 });
+            return treeTasks;
+        }
 
+        private List<Activity> GetActivity()
+        {
+            var activities = new List<Activity>();
+            activities.Add(new Activity { TaskId = 1, Description = "Ordered new Cornerstone Vibe" });
+            activities.Add(new Activity { TaskId = 1, Description = "Updated Tracking Document" });
+            activities.Add(new Activity { TaskId = 2, Description = "Created Git Project Repo" });
+            activities.Add(new Activity { TaskId = 2, Description = "Created Visual Studio Project" });
+            activities.Add(new Activity { TaskId = 2, Description = "Add Entity Models" });
+            return activities;
+        }
     }
 }
