@@ -71,25 +71,6 @@ namespace TaskTreeMD.Repository
                 throw;
             }
 
-            // Activity
-            var activity = GetActivity();
-            db.Activity.AddRange(activity);
-            try
-            {
-                int numAffected = await db.SaveChangesAsync();
-                _logger.LogInformation(@"Saved {numAffected} activity");
-                var readActivities = await db.Activity.Select(x => x).ToListAsync();
-                foreach (var p in readActivities)
-                {
-                    _logger.LogInformation($"Activity - Id: {p.Id} Desc: {p.Description}");
-                }
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in ({nameof(TaskTreeDBSeeder)}: " + ex.Message);
-                throw;
-            }
         }
 
         private List<Person> GetPersons()
@@ -107,23 +88,37 @@ namespace TaskTreeMD.Repository
         private List<TreeTask> GetTreeTasks(List<Person> persons)
         {
             var treeTasks = new List<TreeTask>();
-            treeTasks.Add(new TreeTask { Title = "There To Here", SubTitle = "Record Project", AssignedTo = persons[0] });
-            treeTasks.Add(new TreeTask { Title = "Tree Task MD", SubTitle = "Sample Code Project", AssignedTo = persons[1] });
+
+            var tt = new TreeTask
+            {
+                Title = "There To Here",
+                SubTitle = "Record Project",
+                AssignedTo = persons[0]
+
+            };
+            tt.Activities = new List<Activity>();
+            tt.Activities.Add(new Activity { Description = "Ordered new Cornerstone Vibe" });
+            tt.Activities.Add(new Activity { Description = "Updated Tracking Document" });
+            treeTasks.Add(tt);
+
+            tt = new TreeTask
+            {
+                Title = "Tree Task MD",
+                SubTitle = "Sample Code Project",
+                AssignedTo = persons[1]
+
+            };
+            tt.Activities = new List<Activity>();
+            tt.Activities.Add(new Activity { Description = "Created Git Project Repo" });
+            tt.Activities.Add(new Activity { Description = "Created Visual Studio Project" });
+            tt.Activities.Add(new Activity { Description = "Add Entity Models" });
+            treeTasks.Add(tt);
+
             treeTasks.Add(new TreeTask { Title = "Have To Say", SubTitle = "Song", ParentId = 1 });
-            treeTasks.Add(new TreeTask { Title = "Classical Guitar", SubTitle="Tracking", ParentId = 3, AssignedTo = persons[5] });
+            treeTasks.Add(new TreeTask { Title = "Classical Guitar", SubTitle = "Tracking", ParentId = 3, AssignedTo = persons[5] });
             treeTasks.Add(new TreeTask { Title = "Electric Guitar", SubTitle = "Tracking", ParentId = 3, AssignedTo = persons[5] });
             return treeTasks;
-        }
-
-        private List<Activity> GetActivity()
-        {
-            var activities = new List<Activity>();
-            activities.Add(new Activity { TaskId = 1, Description = "Ordered new Cornerstone Vibe" });
-            activities.Add(new Activity { TaskId = 1, Description = "Updated Tracking Document" });
-            activities.Add(new Activity { TaskId = 2, Description = "Created Git Project Repo" });
-            activities.Add(new Activity { TaskId = 2, Description = "Created Visual Studio Project" });
-            activities.Add(new Activity { TaskId = 2, Description = "Add Entity Models" });
-            return activities;
+            
         }
     }
 }

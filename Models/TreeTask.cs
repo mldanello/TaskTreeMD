@@ -13,5 +13,7 @@
         public Person? AssignedTo { get; set; }
         public DateTime AddedDate { get; set; }
         public DateTime DueDate { get; set; }
+
+        public ICollection<Activity> Activities { get; set; }
     }
 }
