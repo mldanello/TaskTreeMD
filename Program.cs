@@ -19,6 +19,7 @@ builder.Services.AddDbContext<TaskTreeDBContext>(options => {
 // TODO: Add Logging .. ? serilog ?? 
 // TODO: Add Logging .. ? App Insights
 
+builder.Services.AddScoped<ITreeTaskRepository, TreeTaskRepository>();
 builder.Services.AddTransient<TaskTreeDBSeeder>();
 
 var app = builder.Build();
