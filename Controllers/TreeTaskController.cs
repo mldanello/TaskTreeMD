@@ -20,7 +20,7 @@ namespace TaskTreeMD.Controllers
         // GET api/treetasks
         [HttpGet]
         //[NoCache]  TODO: move over custom attribute to force no cache on the api call
-        [ProducesResponseType(typeof(List<TreeTask>), 200)]  // Add Attributes for Swagger
+        [ProducesResponseType(typeof(List<TreeTask>), 200)]  // Add Attributes f0or Swagger
         [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<ActionResult<List<TreeTask>>> TreeTasks()
         {
@@ -35,5 +35,25 @@ namespace TaskTreeMD.Controllers
                 return BadRequest(new ApiResponse { Status = false });
             }
         }
+
+        // Get api/treetasks/#
+        [HttpGet("{id}", Name = "GetTreeTaskRoute")]
+        //[NoCache]  TODO: move over custom attribute to force no cache on the api call
+        [ProducesResponseType(typeof(List<TreeTask>), 200)]  // Add Attributes f0or Swagger
+        [ProducesResponseType(typeof(ApiResponse), 400)]
+        public async Task<ActionResult<List<TreeTask>>> TreeTasks(int id)
+        {
+            try
+            {
+                var treeTask = await _treeTaskRepository.GetTreeTaskAsync(id);
+                return Ok(treeTask);
+            }
+            catch (Exception ex)
+            {
+                _Logger.LogError(ex.Message);
+                return BadRequest(new ApiResponse { Status = false });
+            }
+        }
+
     }
 }
